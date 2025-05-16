@@ -1,3 +1,4 @@
+#include "matrix.hpp"
 #include "vector.hpp"
 
 /**
@@ -91,5 +92,33 @@ Vector<K> linear_combination(std::vector<Vector<K>> const &u, std::vector<K> coe
         else
             result = add(result, scl(u[i], coefs[i]));
     }
+    return result;
+}
+
+template <typename K>
+Vector<K> lerp(const Vector<K> &v, const Vector<K> &u, const f32 &t)
+{
+    if (v.getSize() != u.getSize()) {
+        throw std::invalid_argument("The vectors must have the same size.");
+    }
+    Vector<K> result = scl(v, (1 - t));
+    result.add(scl(u, t));
+    return result;
+}
+
+template <typename K>
+K lerp(const K &a, const K &b, const f32 &t)
+{
+    return (1 - t) * a + t * b;
+}
+
+template <typename K>
+Matrix<K> lerp(const Matrix<K> &M, const Matrix<K> &N, const f32 &t)
+{
+    if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
+        throw std::invalid_argument("The matrices must have the same size.");
+    }
+    Matrix<K> result = scl(M, (1 - t));
+    result.add(scl(N, t));
     return result;
 }

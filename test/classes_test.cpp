@@ -10,12 +10,14 @@ int main() {
         1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
 
+    
+    
     std::vector<std::vector<f32>> Mat = {
         {9, 8, 7},
         {6, 5, 4},
         {3, 2, 1}
     };
-
+    
     Vector<f32> VecObj(Vec);
     std::cout << "Original Vector:" << std::endl;
     VecObj.print();

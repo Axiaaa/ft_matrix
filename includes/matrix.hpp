@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 
@@ -15,7 +16,20 @@ class Matrix {
 
     public:
         //Constructors & Desctructors
-        Matrix(std::vector<std::vector<K>> data) : _data(data) {}
+
+        Matrix(std::vector<std::vector<K>> data)
+        {
+            if (data.empty()) {
+                return;
+            }
+            _data.resize(data.size());
+            for (size_t i = 0; i < data.size(); ++i) {
+                _data[i].resize(data[i].size());
+                for (size_t j = 0; j < data[i].size(); ++j) {
+                    _data[i][j] = data[i][j];
+                }
+            }
+        }
         
         //Constructor used to convert a Vector to a Matrix for the 
         Matrix(std::vector<K> data, size_t rows, size_t cols) {
@@ -48,17 +62,16 @@ class Matrix {
         * @note
         */
         void print() const {
-            size_t rows = getRows();
-            size_t cols = getCols();
-            for (size_t j = 0; j < cols; j++) {
-            std::cout << "[ ";
-            for (size_t i = 0; i < rows; i++) {
-                if (i == rows - 1)
-                std::cout << this->_data[i][j];
-                else
-                std::cout << this->_data[i][j] << ", ";
-            }
-            std::cout << " ]" << std::endl;
+            for (size_t i = 0; i < this->getRows(); ++i)
+            {
+                std::cout << "[ ";
+                for (size_t j = 0; j < this->getCols(); ++j)
+                {
+                    std::cout << _data[i][j];
+                    if (j != this->getCols() - 1)
+                        std::cout << ", ";
+                }
+                std::cout << " ]\n";
             }
         }
 

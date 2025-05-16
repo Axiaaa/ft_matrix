@@ -21,6 +21,9 @@ class Vector {
         //Constructors & Desctructors
         Vector() : _data() {}
         Vector(std::vector<K> data) : _data(data) {}
+        // Vector(K value, size_t size) {
+        //     _data = std::vector<K>(size, value);
+        // };
         ~Vector() {}
         
     
