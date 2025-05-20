@@ -1,5 +1,6 @@
 #pragma once
 
+#include <climits>
 #include <cstddef>
 #include <fstream>
 #include <stdexcept>
@@ -24,12 +25,12 @@ class Vector {
         // Vector(K value, size_t size) {
         //     _data = std::vector<K>(size, value);
         // };
+        Vector(const Vector<K>& other) : _data(other._data) {}
         ~Vector() {}
         
     
         // Getters and Setters
         
-        K getData(size_t index) const { return this->_data[index]; }
         size_t getSize() const { return this->_data.size(); }
         void append(K value) { this->_data.push_back(value); }
 
@@ -86,26 +87,50 @@ class Vector {
         * @brief Adds a vector to the current vector
         * @param v The vector to add
         */
-        void add(Vector<K> const &v) {
+        void add(Vector<K> const &v) 
+        {
             if (this->_data.size() != v.getSize()) {
                 throw std::invalid_argument("The vectors must have the same size.");
             }
             for (size_t i = 0; i < this->_data.size(); i++) {
-                this->_data[i] += v.getData(i);
+                this->_data[i] += v[i];
             }
+        } 
+
+        Vector<K>& operator+=(const Vector<K>& v)
+        {
+            if (this->_data.size() != v.getSize()) {
+                throw std::invalid_argument("The vectors must have the same size.");
+            }
+            for (size_t i = 0; i < this->_data.size(); i++) {
+                this->_data[i] += v[i];
+            }
+            return *this;
         }
 
         /*
         * @brief Subs a vector to the current vector
         * @param v The vector to sub
         */
-        void sub(Vector<K> const &v) {
+        void sub(Vector<K> const &v)
+        {
             if (this->_data.size() != v.getSize()) {
                 throw std::invalid_argument("The vectors must have the same size.");
             }
             for (size_t i = 0; i < this->_data.size(); i++) {
-                this->_data[i] -= v.getData(i);
+                this->_data[i] -= v._data[i];
             }
+        }
+
+        Vector<K>& operator-=(const Vector<K>& v)
+        {
+            if (this->_data.size() != v.getSize()) {
+                throw std::invalid_argument("The vectors must have the same size.");
+            }
+            for (size_t i = 0; i < this->_data.size(); i++) {
+                this->_data[i] -= v._data[i];
+            }
+            return *this;
         }
 
         /**
@@ -119,6 +144,15 @@ class Vector {
             }
         }
 
+        Vector<K>& operator*=(const K& scalar)
+        {
+            for (size_t i = 0; i < this->_data.size(); i++) {
+                this->_data[i] *= scalar;
+            }
+            return *this;
+        }
+
+
         /*========================= EX 01 =========================*/
         /*
         * Methods for the vector class based on the ex01 instructions.
@@ -127,26 +161,63 @@ class Vector {
 
         //No class methods for this one.
 
+        /*========================= EX 01 =========================*/
+        /*
+        * Methods for the vector class based on the ex01 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */  
 
+        //No class methods for this one.
+
+        /*========================= EX 03 =========================*/
+        /*
+        * Methods for the vector class based on the ex01 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */  
+
+        K dot(const Vector<K>& v)
+        {
+            if (this->getSize() != v.getSize())
+                throw std::invalid_argument("The vectors must have the same size.");
+
+            Vector<K> tmp(v * (*this));
+            K res = 0;
+            for (size_t i = 0; i < this->getSize(); ++i)
+                res += tmp[i];
+            return res;
+        }
     };
     
     
-    /**
-    * @brief Adds 2 vectors and returns the result
-    * @param v The first vector
-    * @param u The second vector
-    */
-    template <typename K>
-    Vector<K> add(Vector<K> const &v, Vector<K> const &u)
-    {
-        if (u.getSize() != v.getSize()) {
-            throw std::invalid_argument("The vectors must have the same size.");
-        }
-        Vector<K> result;
-        for (size_t i = 0; i < v.getSize(); i++)
-        result.append(v.getData(i) + u.getData(i));
-    return  result;
+/**
+* @brief Adds 2 vectors and returns the result
+* @param v The first vector
+* @param u The second vector
+*/
+template <typename K>
+Vector<K> add(Vector<K> const &v, Vector<K> const &u)
+{
+    if (u.getSize() != v.getSize()) {
+        throw std::invalid_argument("The vectors must have the same size.");
+    }
+    Vector<K> result;
+    for (size_t i = 0; i < v.getSize(); i++)
+        result.append(v[i] + u[i]);
+    return result;
 }
+
+template <typename K>
+Vector<K> operator+(Vector<K> const &v, Vector<K> const &u)
+{
+    if (u.getSize() != v.getSize()) {
+        throw std::invalid_argument("The vectors must have the same size.");
+    }
+    Vector<K> result;
+    for (size_t i = 0; i < v.getSize(); i++)
+        result.append(v[i] + u[i]);
+    return result;
+}
+
 
 /**
 * @brief Sums 2 vectors and returns the result
@@ -161,8 +232,20 @@ Vector<K> sub(Vector<K> const &v, Vector<K> const &u)
     }
     Vector<K> result;
     for (size_t i = 0; i < v.getSize(); i++)
-    result.append(v.getData(i) - u.getData(i));
-return  result;
+        result.append(v[i] - u[i]);
+    return  result;
+}
+
+template <typename K>
+Vector<K> operator-(Vector<K> const &v, Vector<K> const &u)
+{
+    if (u.getSize() != v.getSize()) {
+        throw std::invalid_argument("The vectors must have the same size.");
+    }
+    Vector<K> result;
+    for (size_t i = 0; i < v.getSize(); i++)
+        result.append(v[i] - u[i]);
+    return result;
 }
 
 /**
@@ -175,7 +258,61 @@ Vector<K> scl(Vector<K> const &v, K scalar)
 {
     Vector<K> result;
     for (size_t i = 0; i < v.getSize(); i++)
-        result.append(v.getData(i) * scalar);
+        result.append(v[i] * scalar);
     return result;
 }
 
+template<typename K>
+Vector<K> operator*(const Vector<K>& v, const K& scalar) {
+    Vector<K> result;
+    for (size_t i = 0; i < v.getSize(); i++) {
+        result.append(v[i] * scalar);
+    }
+    return result;
+}
+
+template<typename K>
+Vector<K> operator*(const K& scalar, const Vector<K>& v) {
+    Vector<K> result;
+    for (size_t i = 0; i < v.getSize(); i++) {
+        result.append(v[i] * scalar);
+    }
+    return result;
+}
+
+template<typename K>
+Vector<K> operator*(const Vector<K>& v, const Vector<K>& u)
+{
+    if (u.getSize() != v.getSize()) {
+        throw std::invalid_argument("The vectors must have the same size.");
+    }
+    Vector<K> result(v);
+    for (size_t i = 0; i < v.getSize(); ++i)
+        result[i] *= u[i];
+    return result;
+}
+
+template<typename K>
+bool operator==(const Vector<K>& v, const Vector<K>& u) {
+    if (u.getSize() != v.getSize()) {
+        throw std::invalid_argument("The vectors must have the same size.");
+    }
+    for (size_t i = 0; i < v.getSize(); i++) {
+        if (v[i] != u[i])
+            return false;
+    }
+    return true;
+}
+
+template<typename K>
+K dot(const Vector<K>& v, const Vector<K>& u)
+{
+    if (u.getSize() != v.getSize())
+        throw std::invalid_argument("The vectors must have the same size.");
+
+    Vector<K> tmp(v * u);
+    K res = 0;
+    for (size_t i = 0; i < u.getSize(); ++i)
+        res += tmp[i];
+    return res;
+}

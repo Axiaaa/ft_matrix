@@ -1,4 +1,4 @@
-NAME = ex00
+NAME = ex03
 SRCS = main.cpp
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)

@@ -83,27 +83,16 @@ Vector<K> linear_combination(std::vector<Vector<K>> const &u, std::vector<K> coe
 {
     if (u.size() != coefs.size())
         throw std::invalid_argument("The number of vectors and coefficients doesn't match !");
-    
-    Vector<K> result = Vector<K>();
-    for (size_t i = 0; i < u.size(); i++)
-    {
-        if (i == 0)
-            result = scl(u[i], coefs[i]);
-        else
-            result = add(result, scl(u[i], coefs[i]));
-    }
+    Vector<K> result = Vector<K>(u[0] * coefs[0]);
+    for (size_t i = 1; i < u.size(); i++)
+        result += (u[i] * coefs[i]);
     return result;
 }
 
 template <typename K>
 Vector<K> lerp(const Vector<K> &v, const Vector<K> &u, const f32 &t)
 {
-    if (v.getSize() != u.getSize()) {
-        throw std::invalid_argument("The vectors must have the same size.");
-    }
-    Vector<K> result = scl(v, (1 - t));
-    result.add(scl(u, t));
-    return result;
+    return (1 - t) * v + t * u;
 }
 
 template <typename K>
@@ -122,3 +111,4 @@ Matrix<K> lerp(const Matrix<K> &M, const Matrix<K> &N, const f32 &t)
     result.add(scl(N, t));
     return result;
 }
+

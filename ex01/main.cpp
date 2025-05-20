@@ -16,7 +16,7 @@ int main() {
     );
 
     Vector<f32> e3 = Vector<f32>(
-        {0, 0, 3}
+        {0, 0, 1}
     );
 
     linear_combination(

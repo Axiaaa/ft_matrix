@@ -100,7 +100,7 @@ class Matrix {
         }
 
 
-         /*========================= EX 00 =========================*/
+        /*========================= EX 00 =========================*/
         /*
         * Methods for the matrix class based on the ex00 instructions.
         * Pure functions are at the bottom of the file, after the class definition.
@@ -111,7 +111,8 @@ class Matrix {
         * @brief Adds a matrix to the current matrix
         * @param v The matrix to add
         */
-        void add(Matrix<K> const &M) {
+        void add(Matrix<K> const &M)
+        {
             if (this->_data.size() != M.getRows() || this->_data[0].size() != M.getCols()) {
                 throw std::invalid_argument("The matrixs must have the same size.");
             }
@@ -120,6 +121,19 @@ class Matrix {
                     this->_data[i][j] += M[i][j];
                 }
             }
+        }
+
+        Matrix<K> operator+=(Matrix<K> const &A)
+        {
+            if (this->_data.size() != A.getRows() || this->_data[0].size() != A.getCols()) {
+                throw std::invalid_argument("The matrixs must have the same size.");
+            }
+            for (size_t i = 0; i < this->_data.size(); i++) {
+                for (size_t j = 0; j < this->_data[i].size(); j++) {
+                    this->_data[i][j] += A[i][j];
+                }
+            }
+            return *this;
         }
 
         /**
@@ -137,6 +151,20 @@ class Matrix {
             }
         }
 
+
+        Matrix<K> operator-=(Matrix<K> const &A)
+        {
+            if (this->_data.size() != A.getRows() || this->_data[0].size() != A.getCols()) {
+                throw std::invalid_argument("The matrixs must have the same size.");
+            }
+            for (size_t i = 0; i < this->_data.size(); i++) {
+                for (size_t j = 0; j < this->_data[i].size(); j++) {
+                    this->_data[i][j] -= A[i][j];
+                }
+            }
+            return *this;
+        }
+
         /**
         * @brief Scale the current matrix to a Scalar
         * @param scalar The variable to scale the matrix to
@@ -149,6 +177,17 @@ class Matrix {
                 }
             }
         }
+
+        Matrix<K> operator*=(K const &scalar)
+        {
+            for (size_t i = 0; i < this->_data.size(); i++) {
+                for (size_t j = 0; j < this->_data[i].size(); j++) {
+                    this->_data[i][j] *= scalar;
+                }
+            }
+            return *this;
+        }
+
 };
 
 
@@ -158,6 +197,22 @@ class Matrix {
 */
 template <typename K>
 Matrix<K> add(Matrix<K> const &M, Matrix<K> const &N) {
+    if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
+        throw std::invalid_argument("The matrixs must have the same size.");
+    }
+    std::vector<std::vector<K>> data;
+    for (size_t i = 0; i < M.getRows(); i++) {
+        std::vector<K> row;
+        for (size_t j = 0; j < M.getCols(); j++) {
+            row.push_back(M[i][j] + N[i][j]);
+        }
+        data.push_back(row);
+    }
+    return Matrix<K>(data);
+}
+
+template <typename K>
+Matrix<K> operator+(Matrix<K> const &M, Matrix<K> const &N) {
     if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
         throw std::invalid_argument("The matrixs must have the same size.");
     }
@@ -192,6 +247,22 @@ Matrix<K> sub(Matrix<K> const &M, Matrix<K> const &N) {
     return Matrix<K>(data);
 }
 
+template <typename K>
+Matrix<K> operator-(Matrix<K> const &M, Matrix<K> const &N) {
+    if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
+        throw std::invalid_argument("The matrixs must have the same size.");
+    }
+    std::vector<std::vector<K>> data;
+    for (size_t i = 0; i < M.getRows(); i++) {
+        std::vector<K> row;
+        for (size_t j = 0; j < M.getCols(); j++) {
+            row.push_back(M[i][j] - N[i][j]);
+        }
+        data.push_back(row);
+    }
+    return Matrix<K>(data);
+}
+
 /**
 * @brief Scale the current matrix to a Scalar
 * @param scalar The variable to scale the matrix to
@@ -208,4 +279,47 @@ Matrix<K> scl(Matrix<K> const &M, K const &scalar)
         data.push_back(row);
     }
     return Matrix<K>(data);
+}
+
+template <typename K>
+Matrix<K> operator*(Matrix<K> const &M, K const &scalar)
+{
+    std::vector<std::vector<K>> data;
+    for (size_t i = 0; i < M.getRows(); i++) {
+        std::vector<K> row;
+        for (size_t j = 0; j < M.getCols(); j++) {
+            row.push_back(M[i][j] * scalar);
+        }
+        data.push_back(row);
+    }
+    return Matrix<K>(data);
+}
+
+template <typename K>
+Matrix<K> operator*(K const &scalar, Matrix<K> const &M)
+{
+    std::vector<std::vector<K>> data;
+    for (size_t i = 0; i < M.getRows(); i++) {
+        std::vector<K> row;
+        for (size_t j = 0; j < M.getCols(); j++) {
+            row.push_back(M[i][j] * scalar);
+        }
+        data.push_back(row);
+    }
+    return Matrix<K>(data);
+}
+
+
+template <typename K>
+bool operator==(Matrix<K> const &M, Matrix<K> const &N) {
+    if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
+        throw std::invalid_argument("The matrixs must have the same size.");
+    }
+    for (size_t i = 0; i < M.getRows(); i++) {
+        for (size_t j = 0; j < M.getCols(); j++) {
+            if (M[i] != N[i])
+                return false;
+        }
+    }
+    return true;
 }
