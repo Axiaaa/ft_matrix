@@ -1,6 +1,7 @@
 #pragma once
 
 #include <climits>
+#include <cmath>
 #include <cstddef>
 #include <fstream>
 #include <stdexcept>
@@ -161,9 +162,9 @@ class Vector {
 
         //No class methods for this one.
 
-        /*========================= EX 01 =========================*/
+        /*========================= EX 02 =========================*/
         /*
-        * Methods for the vector class based on the ex01 instructions.
+        * Methods for the vector class based on the ex02 instructions.
         * Pure functions are at the bottom of the file, after the class definition.
         */  
 
@@ -171,7 +172,7 @@ class Vector {
 
         /*========================= EX 03 =========================*/
         /*
-        * Methods for the vector class based on the ex01 instructions.
+        * Methods for the vector class based on the ex03 instructions.
         * Pure functions are at the bottom of the file, after the class definition.
         */  
 
@@ -186,6 +187,82 @@ class Vector {
                 res += tmp[i];
             return res;
         }
+    
+        /*========================= EX 04 =========================*/
+        /*
+        * Methods for the vector class based on the ex04 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */  
+
+        /**
+        * @brief Return the biggest value of the vector.
+        *
+        * @return K The biggest value.
+        */
+        K max()
+        {
+            K max_val = this[0];
+            for (size_t i = 0; i < this->getSize(); ++i)
+                this[i] > max_val ? max_val = this[i] : max_val;
+            return max_val;
+        }
+
+        /**
+        * @brief Computes the infinity norm (maximum norm) of the vector.
+        * 
+        * @note The infinity norm of a vector is the absolute value of the largest element
+        * in the vector.
+        * 
+        * @return The infinity norm of the vector.
+        */
+        K norm_inf()
+        {
+            return this->max();
+        }
+
+        /**
+        * @brief Computes the 1-norm of the vector.
+        * 
+        * @note The 1-norm of a vector is the sum of the absolute values of all its elements.
+        * 
+        * @return The 1-norm of the vector.
+        */
+        K norm_1()
+        {
+            K res = this[0];
+            for (size_t i = 0; i < this->getSize(); ++i)
+                res += this[i];
+            return res;
+        }
+
+        /**
+        * @brief Computes the Euclidean norm (L2 norm) of the vector.
+        * 
+        * @note The Euclidean norm of a vector is the square root of the sum of the squares
+        * of its elements, which corresponds to the Euclidean distance between the vector
+        * and the origin in an n-dimensional space.
+        * 
+        * @return The Euclidean norm of the vector (0 if the vector is zero).
+        */
+        K norm()
+        {
+            K res = dot(this, this);
+            return res > 0 ? sqrt(res) : 0;
+        }
+
+        /**
+        * @brief Calculate the magnitude (length) of the vector.
+        * 
+        * @note Calculating the magnitude of a vector is useful in various mathematical and physical applications,
+        * such as determining the distance between two points, normalizing vectors, and calculating scalar projections.
+        * 
+        * @return The magnitude of the vector.
+        */
+        K mag()
+        {
+            return (dot(this, this));
+        }
+
     };
     
     
@@ -315,4 +392,26 @@ K dot(const Vector<K>& v, const Vector<K>& u)
     for (size_t i = 0; i < u.getSize(); ++i)
         res += tmp[i];
     return res;
+}
+
+template<typename K>
+K norm_inf(const Vector<K>& v)
+{
+    return v.max();
+}
+
+template<typename K>
+K norm_1(const Vector<K>& v)
+{
+    K res = v[0];
+    for (size_t i = 0; i < this->getSize(); ++i)
+        res += this[i];
+    return res;
+}
+
+template<typename K>
+K norm(const Vector<K>& v)
+{
+    K res = dot(v, v);
+    return res > 0 ? sqrt(res) : 0;
 }
