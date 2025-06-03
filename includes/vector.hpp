@@ -366,30 +366,6 @@ K dot(const Vector<K>& v, const Vector<K>& u)
     return res;
 }
 
-template<typename K>
-K norm_inf(const Vector<K>& v)
-{
-    return v.max();
-}
 
-template<typename K>
-K norm_1(const Vector<K>& v)
-{
-    K res = v[0];
-    for (size_t i = 0; i < v.getSize(); ++i)
-        res += v[i];
-    return res;
-}
 
-template<typename K>
-K norm(const Vector<K>& v)
-{
-    K res = dot(v, v);
-    return res > 0 ? sqrt(res) : 0;
-}
-template<typename K>
-Vector<K> normalize(const Vector<K>& v)
-{
-    Vector<K> res = v * (1 / norm(v));
-    return res;
-}
+
