@@ -1,10 +1,7 @@
 #pragma once
 
-#include <climits>
 #include <cmath>
-#include <cstddef>
 #include <fstream>
-#include <stdexcept>
 #include <vector>
 #include <iostream>
 
@@ -84,7 +81,7 @@ class Vector {
         */
         
         
-        /*
+        /**
         * @brief Adds a vector to the current vector
         * @param v The vector to add
         */
@@ -109,9 +106,9 @@ class Vector {
             return *this;
         }
 
-        /*
-        * @brief Subs a vector to the current vector
-        * @param v The vector to sub
+        /**
+         * @brief Subs a vector to the current vector
+         * @param v The vector to sub
         */
         void sub(Vector<K> const &v)
         {
@@ -199,70 +196,45 @@ class Vector {
         *
         * @return K The biggest value.
         */
-        K max()
+        K max() const
         {
-            K max_val = this[0];
-            for (size_t i = 0; i < this->getSize(); ++i)
-                this[i] > max_val ? max_val = this[i] : max_val;
+            if (this->getSize() == 0)
+                throw std::runtime_error("Cannot find maximum of an empty vector");
+            K max_val = (*this)[0];
+            for (size_t i = 1; i < this->getSize(); ++i)
+                if ((*this)[i] > max_val)
+                    max_val = (*this)[i];
             return max_val;
         }
 
         /**
-        * @brief Computes the infinity norm (maximum norm) of the vector.
-        * 
-        * @note The infinity norm of a vector is the absolute value of the largest element
-        * in the vector.
-        * 
-        * @return The infinity norm of the vector.
-        */
-        K norm_inf()
-        {
-            return this->max();
-        }
-
-        /**
-        * @brief Computes the 1-norm of the vector.
-        * 
-        * @note The 1-norm of a vector is the sum of the absolute values of all its elements.
-        * 
-        * @return The 1-norm of the vector.
-        */
-        K norm_1()
-        {
-            K res = this[0];
-            for (size_t i = 0; i < this->getSize(); ++i)
-                res += this[i];
-            return res;
-        }
-
-        /**
-        * @brief Computes the Euclidean norm (L2 norm) of the vector.
-        * 
-        * @note The Euclidean norm of a vector is the square root of the sum of the squares
-        * of its elements, which corresponds to the Euclidean distance between the vector
-        * and the origin in an n-dimensional space.
-        * 
-        * @return The Euclidean norm of the vector (0 if the vector is zero).
-        */
-        K norm()
-        {
-            K res = dot(this, this);
-            return res > 0 ? sqrt(res) : 0;
-        }
-
-        /**
-        * @brief Calculate the magnitude (length) of the vector.
-        * 
-        * @note Calculating the magnitude of a vector is useful in various mathematical and physical applications,
-        * such as determining the distance between two points, normalizing vectors, and calculating scalar projections.
-        * 
-        * @return The magnitude of the vector.
-        */
-        K mag()
+         * @brief Calculates the squared magnitude (length) of the vector
+         * 
+         * This method returns the dot product of the vector with itself, which
+         * is equivalent to the sum of squares of all vector components.
+         * 
+         * @return The squared magnitude of the vector as type K
+         * 
+         * @note Using squared magnitude is more efficient than calculating the 
+         * actual magnitude when only comparing vector lengths, as it avoids the
+         * computationally expensive square root operation. For example, to determine
+         * if vector A is longer than vector B, comparing A.mag2() > B.mag2() is
+         * more efficient than comparing A.mag() > B.mag().
+         */
+        K mag2() const
         {
             return (dot(this, this));
         }
 
+        /**
+         * @brief Normalize the vector.
+         * 
+         * @return void
+         */
+        void normalize()
+        {
+            this->scl(1 / norm(*this));
+        }
     };
     
     
@@ -404,8 +376,8 @@ template<typename K>
 K norm_1(const Vector<K>& v)
 {
     K res = v[0];
-    for (size_t i = 0; i < this->getSize(); ++i)
-        res += this[i];
+    for (size_t i = 0; i < v.getSize(); ++i)
+        res += v[i];
     return res;
 }
 
@@ -414,4 +386,10 @@ K norm(const Vector<K>& v)
 {
     K res = dot(v, v);
     return res > 0 ? sqrt(res) : 0;
+}
+template<typename K>
+Vector<K> normalize(const Vector<K>& v)
+{
+    Vector<K> res = v * (1 / norm(v));
+    return res;
 }
