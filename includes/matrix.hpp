@@ -17,6 +17,8 @@ class Matrix {
     public:
         //Constructors & Desctructors
 
+        Matrix() : _data() {}
+
         Matrix(std::vector<std::vector<K>> data)
         {
             if (data.empty()) {
@@ -54,6 +56,26 @@ class Matrix {
 
         size_t getRows() const { return this->_data.size(); }
         size_t getCols() const { return this->_data[0].size(); }
+
+        void append(Vector<K> value) {
+            if (this->_data.empty()) {
+                std::vector<K> newRow;
+                for (size_t i = 0; i < value.getSize(); ++i) {
+                    newRow.push_back(value[i]);
+                }
+                this->_data.push_back(newRow);
+            } else {
+                if (value.getSize() != this->getCols()) {
+                    throw std::invalid_argument("Vector size must match matrix column count for append operation.");
+                }
+                
+                std::vector<K> newRow;
+                for (size_t i = 0; i < value.getSize(); ++i) {
+                    newRow.push_back(value[i]);
+                }
+                this->_data.push_back(newRow);
+            }
+        }
 
         // Methods
 
@@ -188,6 +210,44 @@ class Matrix {
             return *this;
         }
 
+        void mul_vec(const Vector<K>& u)
+        {
+            if (u.getSize() != this->getCols())
+                throw std::invalid_argument("The vector size doesn't match the matrix column count.");
+            
+            std::vector<K> result(this->getRows(), K());
+        
+            for (size_t i = 0; i < this->getRows(); i++) {
+                for (size_t j = 0; j < this->getCols(); j++) {
+                    result[i] += (*this)[i][j] * u[j];
+                }
+            }
+            this->_data.clear();
+            for (size_t i = 0; i < result.size(); i++) {
+                this->_data.push_back({result[i]});
+            }
+        }
+
+    void mul_mat(Matrix<K> const &A) {
+        if (A.getCols() != this->getRows())
+         throw std::invalid_argument("The matrix sizes don't match.");
+
+        std::vector<std::vector<K>> result;
+
+        for (size_t i = 0; i < A.getRows(); i++) {
+         std::vector<K> row;
+         for (size_t j = 0; j < this->getCols(); j++) {
+             K sum = K();
+             for (size_t k = 0; k < A.getCols(); k++) {
+              sum += A[i][k] * (*this)[k][j];
+             }
+             row.push_back(sum);
+         }
+         result.push_back(row);
+        }
+        
+        _data = result;
+    }
 };
 
 

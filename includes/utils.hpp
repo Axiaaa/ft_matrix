@@ -15,16 +15,16 @@
 *         in this case.
 */
 template <typename K>
-Vector<K> LinearTransformation(const Vector<K>& u, const Matrix<K>& M)
+Vector<K> mul_vec(const Matrix<K>& M, const Vector<K>& u)
 {
     if (u.getSize() != M.getCols())
         throw std::invalid_argument("The vector size doesn't match the matrix column count.");
 
-    Vector<K> result = Vector<K>();
+    Vector<K> result;
 
-    for (auto i = 0; i < M.getRows(); i++) {
+    for (size_t i = 0; i < M.getRows(); i++) {
         K sum = 0;
-        for (auto j = 0; j < M.getCols(); j++) {
+        for (size_t j = 0; j < M.getCols(); j++) {
             sum += M[i][j] * u[j];
         }
         result.append(sum);
@@ -46,21 +46,23 @@ Vector<K> LinearTransformation(const Vector<K>& u, const Matrix<K>& M)
 *         in this case.
 */
 template <typename K>
-Matrix<K> SolveComposition(Matrix<K> A, Matrix<K> B) {
+Matrix<K> mul_mat(Matrix<K> A, Matrix<K> B) {
 
     if (A.getCols() != B.getRows())
         throw std::invalid_argument("The matrix sizes don't match.");
 
-    Matrix<K> result = Matrix<K>();
+    Matrix<K> result;
 
-    for (auto i = 0; i < A.getRows(); i++) {
-        for (auto j = 0; j < B.getCols(); j++) {
+    for (size_t i = 0; i < A.getRows(); i++) {
+        Vector<K> row;
+        for (size_t j = 0; j < B.getCols(); j++) {
             K sum = 0;
-            for (auto k = 0; k < A.getCols(); k++) {
+            for (size_t k = 0; k < A.getCols(); k++) {
                 sum += A[i][k] * B[k][j];
             }
-            result[i].push_back(sum);
+            row.append(sum);
         }
+        result.append(row);
     }
     return result;
 }
