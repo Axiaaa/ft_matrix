@@ -1,5 +1,6 @@
 #include "matrix.hpp"
 #include "vector.hpp"
+#include <stdexcept>
 
 /**
 * @brief Computes the linear transformation of a vector by a matrix.
@@ -145,4 +146,16 @@ K norm(const Vector<K>& v)
 {
     K res = dot(v, v);
     return res > 0 ? sqrt(res) : 0;
+}
+template<typename K>
+Vector<K> cross_product(const Vector<K>& v, const Vector<K>& u)
+{
+    if (v.getSize() != 3 || u.getSize() != 3)
+        throw std::invalid_argument("The vectors have to be 3 Dimensions");
+    Vector<K> res({
+        v[1] * u[2] - v[2] * u[1],
+        v[2] * u[0] - v[0] * u[2],
+        v[0] * u[1] - v[1] * u[0]
+    });
+    return res;
 }
