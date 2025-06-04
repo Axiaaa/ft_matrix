@@ -209,6 +209,68 @@ class Matrix {
             }
             return *this;
         }
+        
+        /*========================= EX 01 =========================*/
+        /*
+        * Methods for the vector class based on the ex01 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */  
+
+        //No class methods for this one.
+
+        /*========================= EX 02 =========================*/
+        /*
+        * Methods for the vector class based on the ex02 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */  
+
+        //No class methods for this one.
+
+        /*========================= EX 03 =========================*/
+        /*
+        * Methods for the vector class based on the ex03 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+        
+        //No class methods for this one.
+
+        /*========================= EX 04 =========================*/
+        /*
+        * Methods for the vector class based on the ex04 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        //No class methods for this one.
+
+        /*========================= EX 04 =========================*/
+        /*
+        * Methods for the vector class based on the ex04 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        //No class methods for this one.
+
+        /*========================= EX 05 =========================*/
+        /*
+        * Methods for the vector class based on the ex05 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        //No class methods for this one.
+
+        /*========================= EX 06 =========================*/
+        /*
+        * Methods for the vector class based on the ex06 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        //No class methods for this one.
+        
+        /*========================= EX 07 =========================*/
+        /*
+        * Methods for the vector class based on the ex06 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
 
         void mul_vec(const Vector<K>& u)
         {
@@ -228,26 +290,36 @@ class Matrix {
             }
         }
 
-    void mul_mat(Matrix<K> const &A) {
-        if (A.getCols() != this->getRows())
-         throw std::invalid_argument("The matrix sizes don't match.");
+        void mul_mat(Matrix<K> const &A)
+        {
+            if (A.getCols() != this->getRows())
+                throw std::invalid_argument("The matrix sizes don't match.");
 
-        std::vector<std::vector<K>> result;
+            std::vector<std::vector<K>> result;
 
-        for (size_t i = 0; i < A.getRows(); i++) {
-         std::vector<K> row;
-         for (size_t j = 0; j < this->getCols(); j++) {
-             K sum = K();
-             for (size_t k = 0; k < A.getCols(); k++) {
-              sum += A[i][k] * (*this)[k][j];
-             }
-             row.push_back(sum);
-         }
-         result.push_back(row);
+            for (size_t i = 0; i < A.getRows(); i++) {
+                std::vector<K> row;
+                for (size_t j = 0; j < this->getCols(); j++) {
+                    K sum = K();
+                    for (size_t k = 0; k < A.getCols(); k++) {
+                        sum += A[i][k] * (*this)[k][j];
+                    }
+                    row.push_back(sum);
+                }
+                result.push_back(row);
+            }
+            
+            _data = result;
         }
+
+        /*========================= EX 08 =========================*/
+        /*
+        * Methods for the vector class based on the ex06 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
         
-        _data = result;
-    }
+        //No class methods for this one.
+
 };
 
 
@@ -382,4 +454,70 @@ bool operator==(Matrix<K> const &M, Matrix<K> const &N) {
         }
     }
     return true;
+}
+
+
+/**
+* @brief Computes the linear transformation of a vector by a matrix.
+* 
+* @tparam K The data type of the vector and matrix elements.
+* @param u The vector to be transformed.
+* @param M The matrix representing the linear transformation.
+* @return Vector<K> The resulting vector after applying the transformation.
+* 
+* @throws std::invalid_argument If the size of the vector does not match the 
+*         number of columns in the matrix, as the transformation is undefined 
+*         in this case.
+*/
+template <typename K>
+Vector<K> mul_vec(const Matrix<K>& M, const Vector<K>& u)
+{
+    if (u.getSize() != M.getCols())
+        throw std::invalid_argument("The vector size doesn't match the matrix column count.");
+
+    Vector<K> result;
+
+    for (size_t i = 0; i < M.getRows(); i++) {
+        K sum = 0;
+        for (size_t j = 0; j < M.getCols(); j++) {
+            sum += M[i][j] * u[j];
+        }
+        result.append(sum);
+    }
+    return result;
+}
+
+
+/**
+* @brief Computes the matrix multiplication of two matrices.
+* 
+* @tparam K The data type of the matrix elements.
+* @param A The first matrix in the multiplication (left-hand side).
+* @param B The second matrix in the multiplication (right-hand side).
+* @return Matrix<K> The resulting matrix after multiplying A and B.
+* 
+* @throws std::invalid_argument If the number of columns in A does not match 
+*         the number of rows in B, as matrix multiplication is undefined 
+*         in this case.
+*/
+template <typename K>
+Matrix<K> mul_mat(Matrix<K> A, Matrix<K> B) {
+
+    if (A.getCols() != B.getRows())
+        throw std::invalid_argument("The matrix sizes don't match.");
+
+    Matrix<K> result;
+
+    for (size_t i = 0; i < A.getRows(); i++) {
+        Vector<K> row;
+        for (size_t j = 0; j < B.getCols(); j++) {
+            K sum = 0;
+            for (size_t k = 0; k < A.getCols(); k++) {
+                sum += A[i][k] * B[k][j];
+            }
+            row.append(sum);
+        }
+        result.append(row);
+    }
+    return result;
 }
