@@ -2,6 +2,7 @@
 #include "vector.hpp"
 #include <cstddef>
 #include <stdexcept>
+#include <cmath>
 
 /**
  * @brief Computes the linear combination of vectors

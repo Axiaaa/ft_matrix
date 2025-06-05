@@ -320,6 +320,28 @@ class Matrix {
         
         //No class methods for this one.
 
+
+        /*========================= EX 09 =========================*/
+        /*
+        * Methods for the vector class based on the ex06 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        void transpose()
+        {
+            std::vector<std::vector<K>> transposed_data;
+
+            for (size_t j = 0; j < this->getCols(); j++) {
+                std::vector<K> row;
+                for (size_t i = 0; i < this->getRows(); i++) {
+                    row.push_back((*this)[i][j]);
+                }
+                transposed_data.push_back(row);
+            }
+            
+            this->_data = transposed_data;
+        }
+
 };
 
 
@@ -520,4 +542,20 @@ Matrix<K> mul_mat(Matrix<K> A, Matrix<K> B) {
         result.append(row);
     }
     return result;
+}
+
+template <typename K>
+Matrix<K> transpose(const Matrix<K>& A)
+{
+    std::vector<std::vector<K>> transposed_data;
+
+    for (size_t j = 0; j < A.getCols(); j++) {
+        std::vector<K> row;
+        for (size_t i = 0; i < A.getRows(); i++) {
+            row.push_back(A[i][j]);
+        }
+        transposed_data.push_back(row);
+    }
+    
+    return Matrix<K>(transposed_data);
 }
