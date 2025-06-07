@@ -48,16 +48,12 @@ class Vector {
 
         K& operator[](std::size_t index)
         {
-            if (index >= getSize())
-                throw std::out_of_range("Vector index out of range.");
-            return _data[index];
+            return _data.at(index);
         }
-
+        
         const K& operator[](std::size_t index) const
         {
-            if (index >= getSize())
-                throw std::out_of_range("Vector index out of range.");
-            return _data[index];
+            return _data.at(index);
         }
 
         std::ofstream &operator<<(std::ofstream &os) const

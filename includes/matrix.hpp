@@ -111,16 +111,12 @@ class Matrix {
         
         std::vector<K>& operator[](std::size_t row)
         {
-            if (row >= getRows())
-                throw std::out_of_range("Matrix row index out of range.");
-            return _data[row];
+            return _data.at(row);
         }
 
         const std::vector<K>& operator[](std::size_t row) const
         {
-            if (row >= getRows())
-                throw std::out_of_range("Matrix row index out of range.");
-            return _data[row];
+            return _data.at(row);
         }
 
 
