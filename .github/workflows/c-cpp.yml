@@ -26,8 +26,8 @@ jobs:
           make fclean || true
           # Compiler tous les exercices avec ASan
           for dir in 00 01 02 03 04 05 06 07 08 09; do
-            echo "Building ex$$dir with ASan..."
-            make -C ex$$dir CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" || exit 1
+            echo "Building ex$dir with ASan..."
+            make -C ex$dir CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" || exit 1
           done
           # Lancer les tests (suppose que make test utilise les exécutables compilés)
           make test
