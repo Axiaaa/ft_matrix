@@ -1,4 +1,4 @@
-name: CI
+name: CI with AddressSanitizer
 
 on:
   push:
@@ -17,11 +17,17 @@ jobs:
       - name: Install build tools
         run: sudo apt-get update && sudo apt-get install -y build-essential
 
-      - name: Build and run all tests
-        run: make test
-
-      - name: Show environment and compiler flags
+      - name: Build with AddressSanitizer and run tests
+        env:
+          CXXFLAGS: "-Wall -Wextra -Werror -std=c++17 -g3 -O1 -fsanitize=address"
+          LDFLAGS: "-fsanitize=address"
         run: |
-          echo "CXXFLAGS=$CXXFLAGS"
-          c++ --version
-
+          # Nettoyer avant build
+          make fclean || true
+          # Compiler tous les exercices avec ASan
+          for dir in 00 01 02 03 04 05 06 07 08 09; do
+            echo "Building ex$$dir with ASan..."
+            make -C ex$$dir CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" || exit 1
+          done
+          # Lancer les tests (suppose que make test utilise les exécutables compilés)
+          make test

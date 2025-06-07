@@ -4,7 +4,7 @@ OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 INCLUDES = -I../includes
 COMPILO = c++
-FLAGS = -Wall -Wextra -Werror -std=c++17 -MMD -MP -g3 -O0
+FLAGS = -Wall -Wextra -Werror -std=c++17 -MMD -MP -g3 
 BUILD_DIR = .build
 BUILD_OBJS = $(addprefix $(BUILD_DIR)/, $(OBJS))
 BUILD_DEPS = $(addprefix $(BUILD_DIR)/, $(DEPS))
