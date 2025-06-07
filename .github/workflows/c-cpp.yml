@@ -19,3 +19,9 @@ jobs:
 
       - name: Build and run all tests
         run: make test
+
+      - name: Show environment and compiler flags
+        run: |
+          echo "CXXFLAGS=$CXXFLAGS"
+          c++ --version
+
