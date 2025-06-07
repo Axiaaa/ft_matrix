@@ -66,7 +66,7 @@ void test_double_transpose() {
     std::cout << "\n=== Testing double transpose ===" << std::endl;
     Matrix<f32> m({
         {1, 3, 5},
-        {2, 4, 6}
+        {2, 4}
     });
     
     std::cout << "Original:" << std::endl;
