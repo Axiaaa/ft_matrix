@@ -61,6 +61,9 @@ K angle_cos(const Vector<K>& v, const Vector<K>& u)
 template<typename K>
 Vector<K> normalize(const Vector<K>& v)
 {
+    K tmp = norm(v);
+    if (tmp == 0)
+        throw std::invalid_argument("Cannot normalise vector of 0");
     Vector<K> res = v * (1 / norm(v));
     return res;
 }
@@ -68,15 +71,21 @@ Vector<K> normalize(const Vector<K>& v)
 template<typename K>
 K norm_inf(const Vector<K>& v)
 {
-    return v.max();
+    if (v.getSize() == 0)
+        throw std::runtime_error("Cannot find maximum of an empty vector");
+    K max_val = std::fabs(v[0]);
+    for (size_t i = 1; i < v.getSize(); ++i)
+        if (std::fabs(v[i]) > max_val)
+            max_val = std::fabs(v[i]);
+    return max_val;
 }
 
 template<typename K>
 K norm_1(const Vector<K>& v)
 {
-    K res = v[0];
-    for (size_t i = 0; i < v.getSize(); ++i)
-        res += v[i];
+    K res = std::fabs(v[0]);
+    for (size_t i = 1; i < v.getSize(); ++i)
+        res += std::fabs(v[i]);
     return res;
 }
 

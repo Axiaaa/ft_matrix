@@ -44,7 +44,7 @@ class Vector {
         }
 
         Matrix<K> toMatrix(size_t rows, size_t cols) const { return Matrix<K>(this->_data, rows, cols); }
-
+        std::vector<K> toStd() { return this->_data; }
 
         K& operator[](std::size_t index)
         {
@@ -232,7 +232,10 @@ class Vector {
          */
         void normalize()
         {
-            this->scl(1 / norm(*this));
+            K tmp = norm(*this);
+            if (tmp == 0)
+                throw std::invalid_argument("Cannot normalise vector of 0");
+            this->scl(1 / tmp);
         }
     };
     

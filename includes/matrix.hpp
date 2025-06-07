@@ -19,7 +19,9 @@ class Matrix {
 
         Matrix() : _data() {}
 
-        Matrix(std::vector<std::vector<K>> data)
+        Matrix(const Matrix<K>& other) : _data(other._data) {}
+        
+        explicit Matrix(std::vector<std::vector<K>> data)
         {
             if (data.empty()) {
                 return;
@@ -34,7 +36,7 @@ class Matrix {
         }
         
         //Constructor used to convert a Vector to a Matrix for the 
-        Matrix(std::vector<K> data, size_t rows, size_t cols) {
+        explicit Matrix(std::vector<K> data, size_t rows, size_t cols) {
             if (rows == 0 || cols == 0) {
                 throw std::invalid_argument("The number of rows and columns must be greater than 0.");
             }
@@ -277,32 +279,36 @@ class Matrix {
             if (u.getSize() != this->getCols())
                 throw std::invalid_argument("The vector size doesn't match the matrix column count.");
             
-            std::vector<K> result(this->getRows(), K());
-        
+            Vector<K> result;
+
             for (size_t i = 0; i < this->getRows(); i++) {
+                K sum = 0;
                 for (size_t j = 0; j < this->getCols(); j++) {
-                    result[i] += (*this)[i][j] * u[j];
+                    sum += (*this)[i][j] * u[j];
                 }
+                    result.append(sum);
+                    
             }
             this->_data.clear();
-            for (size_t i = 0; i < result.size(); i++) {
+            for (size_t i = 0; i < result.getSize(); i++) {
                 this->_data.push_back({result[i]});
             }
         }
+    
 
         void mul_mat(Matrix<K> const &A)
         {
-            if (A.getCols() != this->getRows())
+            if (this->getCols() != A.getRows())
                 throw std::invalid_argument("The matrix sizes don't match.");
 
             std::vector<std::vector<K>> result;
 
-            for (size_t i = 0; i < A.getRows(); i++) {
+            for (size_t i = 0; i < this->getRows(); i++) {
                 std::vector<K> row;
-                for (size_t j = 0; j < this->getCols(); j++) {
+                for (size_t j = 0; j < A.getCols(); j++) {
                     K sum = K();
-                    for (size_t k = 0; k < A.getCols(); k++) {
-                        sum += A[i][k] * (*this)[k][j];
+                    for (size_t k = 0; k < this->getCols(); k++) {
+                        sum += (*this)[i][k] * A[k][j];
                     }
                     row.push_back(sum);
                 }
@@ -470,7 +476,7 @@ Matrix<K> operator*(K const &scalar, Matrix<K> const &M)
 template <typename K>
 bool operator==(Matrix<K> const &M, Matrix<K> const &N) {
     if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
-        throw std::invalid_argument("The matrixs must have the same size.");
+        throw std::invalid_argument("The matrix must have the same size.");
     }
     for (size_t i = 0; i < M.getRows(); i++) {
         for (size_t j = 0; j < M.getCols(); j++) {

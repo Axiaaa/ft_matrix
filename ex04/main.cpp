@@ -2,67 +2,165 @@
 #include "../includes/matrix.hpp"
 #include "../includes/utils.hpp"
 #include <iostream>
+#include <cassert>
+#include <cmath>
 
-int main() {
-    std::cout << "===== Vector Norm Tests =====" << std::endl;
+// Utility function to check if two floats are approximately equal
+bool approx_equal(f32 a, f32 b, f32 epsilon = 1e-5f) {
+    return std::abs(a - b) < epsilon;
+}
+
+// Test Euclidean norm
+void test_norm() {
+    std::cout << "Testing norm()..." << std::endl;
     
-    // Test vectors
     Vector<f32> v1({1, 2, 3});
     Vector<f32> v2({-1, 6});
     Vector<f32> v3({3, 2});
     Vector<f32> v4({0, 0, 0});
     
-    // Test norm() (Euclidean norm)
-    std::cout << "norm() tests:" << std::endl;
-    std::cout << "v1 norm: " << norm(v1) << " (expected: " << std::sqrt(14) << ")" << std::endl;
-    std::cout << "v2 norm: " << norm(v2)  << " (expected: " << std::sqrt(37) << ")" << std::endl;
-    std::cout << "v3 norm: " << norm(v3)  << " (expected: " << std::sqrt(13) << ")" << std::endl;
-    std::cout << "v4 norm: " << norm(v4)  << " (expected: 0)" << std::endl;
+    assert(approx_equal(norm(v1), std::sqrt(14)));
+    assert(approx_equal(norm(v2), std::sqrt(37)));
+    assert(approx_equal(norm(v3), std::sqrt(13)));
+    assert(approx_equal(norm(v4), 0));
     
-    // Test norm_1() (Manhattan distance)
-    std::cout << "\nnorm_1() tests:" << std::endl;
-    std::cout << "v1 norm_1: " << norm_1(v1) << " (expected: 6)" << std::endl;
-    std::cout << "v2 norm_1: " << norm_1(v2) << " (expected: 7)" << std::endl;
-    std::cout << "v3 norm_1: " << norm_1(v3) << " (expected: 5)" << std::endl;
-    std::cout << "v4 norm_1: " << norm_1(v4) << " (expected: 0)" << std::endl;
+    std::cout << "norm() tests passed!" << std::endl;
+}
+
+// Test Manhattan distance (L1 norm)
+void test_norm_1() {
+    std::cout << "Testing norm_1()..." << std::endl;
     
-    // Test norm_inf() (Maximum absolute value)
-    std::cout << "\nnorm_inf() tests:" << std::endl;
-    std::cout << "v1 norm_inf: " << norm_inf(v1) << " (expected: 3)" << std::endl;
-    std::cout << "v2 norm_inf: " << norm_inf(v2) << " (expected: 6)" << std::endl;
-    std::cout << "v3 norm_inf: " << norm_inf(v3) << " (expected: 3)" << std::endl;
-    std::cout << "v4 norm_inf: " << norm_inf(v4) << " (expected: 0)" << std::endl;
+    Vector<f32> v1({1, 2, 3});
+    Vector<f32> v2({-1, 6});
+    Vector<f32> v3({3, 2});
+    Vector<f32> v4({0, 0, 0});
     
-    // Test normalize()
-    std::cout << "\nnormalize() tests:" << std::endl;
+    assert(norm_1(v1) == 6);
+    assert(norm_1(v2) == 7);
+    assert(norm_1(v3) == 5);
+    assert(norm_1(v4) == 0);
     
-    // Create copies of the original vectors to preserve them
-    Vector<f32> v1_copy = v1;
-    std::cout << "Original v1:" << std::endl;
-    v1_copy.print();
-    v1_copy.normalize();  // Normalize in place
-    std::cout << "Normalized v1:" << std::endl;
-    v1_copy.print();
-    std::cout << "Normalized v1 norm: " << norm(v1_copy) << " (expected: 1)" << std::endl;
+    std::cout << "norm_1() tests passed!" << std::endl;
+}
+
+// Test infinity norm (maximum absolute value)
+void test_norm_inf() {
+    std::cout << "Testing norm_inf()..." << std::endl;
     
-    Vector<f32> v2_copy = v2;
-    std::cout << "Original v2:" << std::endl;
-    v2_copy.print();
-    v2_copy.normalize();  // Normalize in place
-    std::cout << "Normalized v2:" << std::endl;
-    v2_copy.print();
-    std::cout << "Normalized v2 norm: " << norm(v2_copy) << " (expected: 1)" << std::endl;
+    Vector<f32> v1({1, 2, 3});
+    Vector<f32> v2({-1, 6});
+    Vector<f32> v3({3, 2});
+    Vector<f32> v4({0, 0, 0});
     
-    // Edge case: Normalizing a zero vector
-    std::cout << "\nEdge case - normalizing a zero vector:" << std::endl;
-    Vector<f32> v4_copy = normalize(v4);
-    std::cout << "Original v4:" << std::endl;
-    v4_copy.print();
+    assert(norm_inf(v1) == 3);
+    assert(norm_inf(v2) == 6);
+    assert(norm_inf(v3) == 3);
+    assert(norm_inf(v4) == 0);
+    
+    std::cout << "norm_inf() tests passed!" << std::endl;
+}
+
+// Test normalize() function
+void test_normalize_function() {
+    std::cout << "Testing normalize() function..." << std::endl;
+    
+    Vector<f32> v1({1, 2, 3});
+    Vector<f32> v2({-1, 6});
+    
+    Vector<f32> v1_normalized = normalize(v1);
+    Vector<f32> v2_normalized = normalize(v2);
+    
+    // Check that the normalized vectors have unit length
+    assert(approx_equal(norm(v1_normalized), 1.0f));
+    assert(approx_equal(norm(v2_normalized), 1.0f));
+    
+    // Check that direction is preserved
+    f32 v1_factor = 1.0f / norm(v1);
+    assert(approx_equal(v1_normalized[0], v1[0] * v1_factor));
+    assert(approx_equal(v1_normalized[1], v1[1] * v1_factor));
+    assert(approx_equal(v1_normalized[2], v1[2] * v1_factor));
+    
+    // Test zero vector
+    Vector<f32> v4({0, 0, 0});
+    bool exception_caught = false;
     try {
-        std::cout << "Normalized v4:" << std::endl;
-        v4_copy.print();
-    } catch (const std::exception& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
+        Vector<f32> v4_normalized = normalize(v4);
+        v4.print();
+    } catch (const std::exception&) {
+        exception_caught = true;
     }
+    assert(exception_caught);
+    
+    std::cout << "normalize() function tests passed!" << std::endl;
+}
+
+// Test normalize() method
+void test_normalize_method() {
+    std::cout << "Testing Vector::normalize() method..." << std::endl;
+    
+    Vector<f32> v1({1, 2, 3});
+    Vector<f32> v1_original = v1;  // Copy for reference
+    v1.normalize();
+    
+    // Check that the vector now has unit length
+    assert(approx_equal(norm(v1), 1.0f));
+    
+    // Check that direction is preserved
+    f32 factor = 1.0f / norm(v1_original);
+    assert(approx_equal(v1[0], v1_original[0] * factor));
+    assert(approx_equal(v1[1], v1_original[1] * factor));
+    assert(approx_equal(v1[2], v1_original[2] * factor));
+    
+    // Test zero vector
+    Vector<f32> v4({0, 0, 0});
+    bool exception_caught = false;
+    try {
+        v4.normalize();
+    } catch (const std::exception&) {
+        exception_caught = true;
+    }
+    assert(exception_caught);
+    
+    std::cout << "Vector::normalize() method tests passed!" << std::endl;
+}
+
+// Test edge cases
+void test_edge_cases() {
+    std::cout << "Testing edge cases..." << std::endl;
+    
+    // Single element vector
+    Vector<f32> v_single({5});
+    assert(norm(v_single) == 5);
+    assert(norm_1(v_single) == 5);
+    assert(norm_inf(v_single) == 5);
+    
+    // Vector with negative values
+    Vector<f32> v_neg({-3, -4});
+    assert(approx_equal(norm(v_neg), 5));
+    assert(norm_1(v_neg) == 7);
+    assert(norm_inf(v_neg) == 4);
+    
+    // Normalizing already normalized vector
+    Vector<f32> v_unit({1, 0, 0});
+    v_unit.normalize();
+    assert(approx_equal(v_unit[0], 1.0f));
+    assert(approx_equal(v_unit[1], 0.0f));
+    assert(approx_equal(v_unit[2], 0.0f));
+    
+    std::cout << "Edge case tests passed!" << std::endl;
+}
+
+int main() {
+    std::cout << "===== Running Vector Norm Tests =====" << std::endl;
+    
+    test_norm();
+    test_norm_1();
+    test_norm_inf();
+    test_normalize_function();
+    test_normalize_method();
+    test_edge_cases();
+    
+    std::cout << "✅ All unit tests passed!\n";
     return 0;
 }
