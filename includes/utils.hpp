@@ -323,3 +323,48 @@ Matrix<K> row_echelon_form(const Matrix<K>& A)
     
     return result;
 }
+
+template<typename K>
+K det2(const Matrix<K>& A)
+{
+    if (A.getCols() != 2 || A.getRows() != 2)
+        throw std::invalid_argument("det2() should only be use on 2x2 matrixes");
+    return ((A[0][0] * A[1][1]) - A[1][0] * A[0][1]);
+}
+template<typename K>
+K det3(const Matrix<K>& A)
+{
+    if (A.getCols() != 3 || A.getRows() != 3)
+        throw std::invalid_argument("det3() should only be use on 3x3 matrixes");
+    return (
+        A[0][0] * ((A[1][1] * A[2][2]) - (A[2][1] * A[1][2])) -
+        A[1][0] * ((A[0][1] * A[2][2]) - (A[0][2] * A[2][1])) +
+        A[2][0] * ((A[0][1] * A[1][2]) - (A[1][1] * A[0][2]))
+    );
+}
+
+template<typename K>
+K det4(const Matrix<K>& A)
+{
+    if (A.getCols() != 4 || A.getRows() != 4)
+        throw std::invalid_argument("det4() should only be use on 4x4 matrixes");
+
+    K res = 0;
+    
+    for (int i = 0; i < 4; ++i) {
+        std::vector<std::vector<K>> minor;
+        for (int row = 1; row < 4; ++row) {
+            std::vector<K> newRow;
+            for (int col = 0; col < 4; ++col) {
+                if (col == i) continue;
+                newRow.push_back(A[row][col]);
+            }
+            minor.push_back(newRow);
+        }
+        K cofactor = (i % 2 == 0 ? 1 : -1) * A[0][i];
+        res += cofactor * det3(Matrix<K>(minor));
+    }
+    return res;
+}
+
+

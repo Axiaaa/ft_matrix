@@ -353,82 +353,105 @@ class Matrix {
 
 
         /**
-    * @brief Transforms a matrix into its row echelon form
-    * 
-    * This function applies elementary row operations to convert the input matrix
-    * into row echelon form (REF). In row echelon form:
-    * - All zero rows are at the bottom
-    * - The leading coefficient (pivot) of each non-zero row appears to the right of
-    *   the leading coefficient of the row above it
-    * - All elements in a column below a leading coefficient are zeros
-    * - The leading coefficient in each row is 1
-    * 
-    * If I want to put a zero inside L2 I will have to use the following formula : 
-    * L2 ← L2 − k × L1
-    * 
-    * For exemple : 
-    * L1 = [2, 4, -2]
-    * L2 = [4, 9, -3]
-    * L2 = L2 − 2 × L1 = [4,9,−3] − 2 × [2,4,−2] = [4,9,−3] − [4,8,−4] = [0,1,1]
-    * 
-    * Also in case k = -1 
-    * L2 ← L2 − (-1) × L1 == L2 + 1 × L1 == L2 + L1
-    * 
-    * @tparam K The data type of the matrix elements
-    * @param A The input matrix to be transformed
-    */
-    void row_echelon_form()
-    {
-        Matrix<K> result(*this);
-        size_t rows = result.getRows();
-        size_t cols = result.getCols();
-        
-        size_t pc = 0; // pivot column
-        
-        for (size_t i = 0; i < rows; ++i) {
-            if (pc >= cols)
-                break;
-                
-            // Find the first row with non-zero entry in pivot column
-            size_t pr = i; // pivot row
-            while (pr < rows && std::abs(result[pr][pc]) < K(1e-10))
-                ++pr;
-                
-            // If no pivot found, move to next column
-            if (pr == rows) {
-                ++pc, --i;
-                continue;
-            }
+        * @brief Transforms a matrix into its row echelon form
+        * 
+        * This function applies elementary row operations to convert the input matrix
+        * into row echelon form (REF). In row echelon form:
+        * - All zero rows are at the bottom
+        * - The leading coefficient (pivot) of each non-zero row appears to the right of
+        *   the leading coefficient of the row above it
+        * - All elements in a column below a leading coefficient are zeros
+        * - The leading coefficient in each row is 1
+        * 
+        * If I want to put a zero inside L2 I will have to use the following formula : 
+        * L2 ← L2 − k × L1
+        * 
+        * For exemple : 
+        * L1 = [2, 4, -2]
+        * L2 = [4, 9, -3]
+        * L2 = L2 − 2 × L1 = [4,9,−3] − 2 × [2,4,−2] = [4,9,−3] − [4,8,−4] = [0,1,1]
+        * 
+        * Also in case k = -1 
+        * L2 ← L2 − (-1) × L1 == L2 + 1 × L1 == L2 + L1
+        * 
+        * @tparam K The data type of the matrix elements
+        * @param A The input matrix to be transformed
+        */
+        void row_echelon_form()
+        {
+            Matrix<K> result(*this);
+            size_t rows = result.getRows();
+            size_t cols = result.getCols();
             
-            // Swap rows if necessary
-            if (pr != i) {
-                for (size_t j = 0; j < cols; ++j) {
-                    K tmp = result[i][j];
-                    result[i][j] = result[pr][j];
-                    result[pr][j] = tmp;
+            size_t pc = 0; // pivot column
+            
+            for (size_t i = 0; i < rows; ++i) {
+                if (pc >= cols)
+                    break;
+                    
+                // Find the first row with non-zero entry in pivot column
+                size_t pr = i; // pivot row
+                while (pr < rows && std::abs(result[pr][pc]) < K(1e-10))
+                    ++pr;
+                    
+                // If no pivot found, move to next column
+                if (pr == rows) {
+                    ++pc, --i;
+                    continue;
                 }
-            }
-            
-            // Scale the pivot row to make pivot = 1
-            K pv = result[i][pc];
-            if (std::abs(pv) > K(1e-10)) {
-                for (size_t j = 0; j < cols; ++j)
-                    result[i][j] /= pv;
-            }
-            
-            // Eliminate other rows
-            for (size_t r = 0; r < rows; ++r) {
-                if (r != i) {
-                    K f = result[r][pc];
+                
+                // Swap rows if necessary
+                if (pr != i) {
+                    for (size_t j = 0; j < cols; ++j) {
+                        K tmp = result[i][j];
+                        result[i][j] = result[pr][j];
+                        result[pr][j] = tmp;
+                    }
+                }
+                
+                // Scale the pivot row to make pivot = 1
+                K pv = result[i][pc];
+                if (std::abs(pv) > K(1e-10)) {
                     for (size_t j = 0; j < cols; ++j)
-                        result[r][j] -= f * result[i][j];
+                        result[i][j] /= pv;
                 }
+                
+                // Eliminate other rows
+                for (size_t r = 0; r < rows; ++r) {
+                    if (r != i) {
+                        K f = result[r][pc];
+                        for (size_t j = 0; j < cols; ++j)
+                            result[r][j] -= f * result[i][j];
+                    }
+                }
+                ++pc;
             }
-            ++pc;
+            this->_data = result._data;
         }
-        this->_data = result._data;
-    }
+
+
+        /*========================= EX 11 =========================*/
+        /*
+        * Methods for the Matrix class based on the ex11 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        K determinant()
+        {
+            if (this->getCols() == 1 && this->getRows() == 1)
+                return (*this)[0][0];
+            if (this->getCols() == 2 && this->getRows() == 2)
+                return det2(*this);
+            else if (this->getCols() == 3 && this->getRows() == 3)
+                return det3(*this);
+            else if (this->getCols() == 4 && this->getRows() == 4)
+                return det4(*this);
+            else
+                throw std::invalid_argument("Cannot get matrix's determinant");
+        }
+
     };
+
 
 
 /**
