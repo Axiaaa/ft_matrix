@@ -18,11 +18,11 @@ class Vector {
     public:
         //Constructors & Desctructors
         Vector() : _data() {}
+
         Vector(std::vector<K> data) : _data(data) {}
-        // Vector(K value, size_t size) {
-        //     _data = std::vector<K>(size, value);
-        // };
+
         Vector(const Vector<K>& other) : _data(other._data) {}
+
         ~Vector() {}
         
     
@@ -184,7 +184,7 @@ class Vector {
         /*
         * Methods for the vector class based on the ex04 instructions.
         * Pure functions are at the bottom of the file, after the class definition.
-        */  
+        */
 
         /**
         * @brief Return the biggest value of the vector.
@@ -233,7 +233,42 @@ class Vector {
                 throw std::invalid_argument("Cannot normalise vector of 0");
             this->scl(1 / tmp);
         }
-    };
+
+
+       
+        /*========================= EX 06 =========================*/
+        /*
+        * Methods for the vector class based on the ex03 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */   
+
+        /**
+        * @brief Computes the cross product of two 3D vectors.
+        * 
+        * The cross product is a binary operation on two vectors in three-dimensional space
+        * that results in another vector perpendicular to both of the input vectors.
+        * 
+        * @tparam K The type of elements stored in the vectors
+        * @param v First 3D vector
+        * @param u Second 3D vector
+        * @return Vector<K> The cross product v × u
+        * @throws std::invalid_argument If either vector is not 3-dimensional
+        */
+        void cross_product(const Vector<K>& u)
+        {
+            if (this->getSize() != 3 || u.getSize() != 3)
+                throw std::invalid_argument("The vectors have to be 3 Dimensions");
+            std::vector<K> res({
+                (*this)[1] * u[2] - (*this)[2] * u[1],
+                (*this)[2] * u[0] - (*this)[0] * u[2],
+                (*this)[0] * u[1] - (*this)[1] * u[0]
+            });
+            this->_data = res;
+        }
+
+
+        //No class methods for the rest of the project
+};
     
     
 /**
@@ -264,7 +299,6 @@ Vector<K> operator+(Vector<K> const &v, Vector<K> const &u)
         result.append(v[i] + u[i]);
     return result;
 }
-
 
 /**
 * @brief Sums 2 vectors and returns the result

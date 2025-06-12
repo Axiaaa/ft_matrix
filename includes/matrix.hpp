@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <iostream>
 #include <vector>
 
@@ -436,6 +437,16 @@ class Matrix {
         * Pure functions are at the bottom of the file, after the class definition.
         */
 
+        /**
+         * @brief Calculates the determinant of the matrix
+         * 
+         * This method computes the determinant of the matrix based on its dimensions:
+         * - For 1x1 matrices: Returns the single element value
+         * - For 2x2, 3x3, and 4x4 matrices: Uses specialized determinant algorithms
+         * 
+         * @return K The calculated determinant value
+         * @throws std::invalid_argument If the matrix dimensions are not 1x1, 2x2, 3x3, or 4x4
+         */
         K determinant()
         {
             if (this->getCols() == 1 && this->getRows() == 1)
@@ -450,8 +461,103 @@ class Matrix {
                 throw std::invalid_argument("Cannot get matrix's determinant");
         }
 
-    };
+        /*========================= EX 12 =========================*/
+        /*
+        * Methods for the Matrix class based on the ex12 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
 
+        /**
+        * @brief Computes the inverse of this matrix using Gaussian elimination with pivoting.
+        * 
+        * This method transforms the current matrix into its inverse by performing Gaussian elimination
+        * with partial pivoting to improve numerical stability. It creates an augmented matrix
+        * with the identity matrix and transforms the original matrix to identity while
+        * simultaneously transforming the identity to the inverse.
+        * 
+        * @throws std::invalid_argument If this matrix is not square
+        * @throws std::runtime_error If the matrix is singular and cannot be inverted
+        * 
+        * @note The method uses a tolerance of 1e-10 to determine if the matrix is singular
+        * @time_complexity O(n³) where n is the dimension of the square matrix
+        * @space_complexity O(n²) for the working matrices
+        */
+        void inverse()
+        {
+            if (this->getCols() != this->getRows())
+                throw std::invalid_argument("Matrix must be square");
+
+            size_t n = this->getRows();
+            
+            Matrix<K> mat(*this);
+            Matrix<K> result(*this);
+            for (size_t col = 0; col < n; ++col) {
+                for (size_t row = 0; row < n; ++row) {
+                    result[col][row] = (col == row) ? 1 : 0;
+                }
+            }
+            
+            for (size_t i = 0; i < n; ++i) {
+                size_t max_row = i;
+                for (size_t row = i + 1; row < n; ++row) {
+                    if (std::abs(mat[i][row]) > std::abs(mat[i][max_row])) {
+                        max_row = row;
+                    }
+                }
+                
+                if (max_row != i) {
+                    for (size_t col = 0; col < n; ++col) {
+                        std::swap(mat[col][i], mat[col][max_row]);
+                        std::swap(result[col][i], result[col][max_row]);
+                    }
+                }
+                
+                if (std::abs(mat[i][i]) < 1e-10) {
+                    throw std::runtime_error("Matrix is singular and cannot be inverted");
+                }
+                
+                K pivot = mat[i][i];
+                for (size_t col = 0; col < n; ++col) {
+                    mat[col][i] /= pivot;
+                    result[col][i] /= pivot;
+                }
+                
+                for (size_t row = 0; row < n; ++row) {
+                    if (row != i) {
+                        K factor = mat[i][row];
+                        for (size_t col = 0; col < n; ++col) {
+                            mat[col][row] -= factor * mat[col][i];
+                            result[col][row] -= factor * result[col][i];
+                        }
+                    }
+                }
+            }
+            this->_data = result._data;
+        }
+
+        /*========================= EX 13 =========================*/
+        /*
+        * Methods for the Matrix class based on the ex12 instructions.
+        * Pure functions are at the bottom of the file, after the class definition.
+        */
+
+        K rank()
+        {
+            K rank = 0; 
+            Matrix<K> tmp(*this);
+            tmp.row_echelon_form();
+            for (size_t col = 0; col < tmp.getCols(); ++col)
+            {
+                for (size_t row = 0; row < tmp.getRows(); ++row)
+                {
+                    if (col == row && tmp[col][row] > 0)
+                        rank++;
+                }
+            }
+            return rank;
+        }
+
+    };
 
 
 /**
@@ -653,6 +759,21 @@ Matrix<K> mul_mat(Matrix<K> A, Matrix<K> B) {
     return result;
 }
 
+/**
+ * @brief Computes the transpose of a matrix
+ * 
+ * Creates a new matrix where rows become columns and columns become rows.
+ * For a matrix A of size m×n, the transpose will be of size n×m such that
+ * the element at position (i,j) in the original matrix is at position (j,i)
+ * in the transposed matrix.
+ * 
+ * @tparam K Type of elements in the matrix
+ * @param A The input matrix to transpose
+ * @return Matrix<K> The transposed matrix
+ * 
+ * @note Time complexity: O(rows * cols)
+ *       Space complexity: O(rows * cols)
+ */
 template <typename K>
 Matrix<K> transpose(const Matrix<K>& A)
 {
@@ -666,4 +787,77 @@ Matrix<K> transpose(const Matrix<K>& A)
         transposed_data.push_back(new_row);
     }
     return Matrix<K>(transposed_data);
+}
+
+
+/**
+ * @brief Computes the inverse of a square matrix using Gaussian elimination with pivoting.
+ * 
+ * This function calculates the inverse of matrix A by performing Gaussian elimination
+ * with partial pivoting to improve numerical stability. It creates an augmented matrix
+ * with the identity matrix and transforms the original matrix to identity while
+ * simultaneously transforming the identity to the inverse.
+ * 
+ * @tparam K The element type of the matrix (must support arithmetic operations)
+ * @param A The input matrix to invert (must be square)
+ * @return Matrix<K> The inverted matrix
+ * @throws std::invalid_argument If the input matrix is not square
+ * @throws std::runtime_error If the matrix is singular and cannot be inverted
+ * 
+ * @note The function uses a tolerance of 1e-10 to determine if the matrix is singular
+ * @time_complexity O(n³) where n is the dimension of the square matrix
+ * @space_complexity O(n²) for the result and working matrices
+ */
+template< typename K> 
+Matrix<K> inverse(const Matrix<K>& A)
+{
+    if (A.getCols() != A.getRows())
+        throw std::invalid_argument("Matrix must be square");
+
+    size_t n = A.getRows();
+    
+    Matrix<K> mat(A);
+    Matrix<K> result(A);
+    for (size_t col = 0; col < n; ++col) {
+        for (size_t row = 0; row < n; ++row) {
+            result[col][row] = (col == row) ? 1 : 0;
+        }
+    }
+    
+    for (size_t i = 0; i < n; ++i) {
+        size_t max_row = i;
+        for (size_t row = i + 1; row < n; ++row) {
+            if (std::abs(mat[i][row]) > std::abs(mat[i][max_row])) {
+                max_row = row;
+            }
+        }
+        
+        if (max_row != i) {
+            for (size_t col = 0; col < n; ++col) {
+                std::swap(mat[col][i], mat[col][max_row]);
+                std::swap(result[col][i], result[col][max_row]);
+            }
+        }
+        
+        if (std::abs(mat[i][i]) < 1e-10) {
+            throw std::runtime_error("Matrix is singular and cannot be inverted");
+        }
+        
+        K pivot = mat[i][i];
+        for (size_t col = 0; col < n; ++col) {
+            mat[col][i] /= pivot;
+            result[col][i] /= pivot;
+        }
+        
+        for (size_t row = 0; row < n; ++row) {
+            if (row != i) {
+                K factor = mat[i][row];
+                for (size_t col = 0; col < n; ++col) {
+                    mat[col][row] -= factor * mat[col][i];
+                    result[col][row] -= factor * result[col][i];
+                }
+            }
+        }
+    }
+    return result;
 }

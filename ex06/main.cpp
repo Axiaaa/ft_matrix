@@ -55,8 +55,26 @@ void test_cross_product() {
     std::cout << "Anti-commutativity property verified!" << std::endl;
 }
 
+void test_method() {
+    std::cout << "Testing cross product..." << std::endl;
+
+    // Test case 1: {0, 0, 1} × {1, 0, 0} = {0, 1, 0}
+    Vector<f32> v1({0, 0, 1});
+    Vector<f32> expected1({0, 1, 0});
+    v1.cross_product(Vector<f32>({1, 0, 0}));
+    assert(vector_equals(v1, expected1));
+    std::cout << "Method Test case 1 passed!" << std::endl;
+
+    // Test case 2: {1, 2, 3} × {4, 5, 6} = {-3, 6, -3}
+    Vector<f32> v2({1, 2, 3});
+    Vector<f32> expected2({-3, 6, -3});
+    v2.cross_product(Vector<f32>({4, 5, 6}));
+    assert(vector_equals(v2, expected2));
+    std::cout << "Method test case 1 passed!" << std::endl;
+    }
 int main() {
     test_cross_product();
+    test_method();
     std::cout << "✅ All unit tests passed!\n";
     return 0;
 }

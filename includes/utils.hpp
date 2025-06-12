@@ -237,9 +237,7 @@ K trace(const Matrix<K>& A)
 {
     K sum = 0;
     for (size_t i = 0; i < A.getCols(); ++i) {
-        for (size_t j = 0; j < A.getRows(); ++j)
-            if (i == j)
-                sum += A[i][j];
+        sum += A[i][i];
     }
     return sum;
 }
@@ -324,6 +322,17 @@ Matrix<K> row_echelon_form(const Matrix<K>& A)
     return result;
 }
 
+/**
+ * @brief Calculates the determinant of a 2x2 matrix
+ * 
+ * Computes the determinant using the formula |A| = a11*a22 - a21*a12
+ * where aij represents the element at row i, column j.
+ * 
+ * @tparam K The numeric type of matrix elements
+ * @param A A 2x2 matrix whose determinant will be calculated
+ * @return K The determinant value of the same type as matrix elements
+ * @throws std::invalid_argument If the input matrix is not 2x2
+ */
 template<typename K>
 K det2(const Matrix<K>& A)
 {
@@ -331,6 +340,18 @@ K det2(const Matrix<K>& A)
         throw std::invalid_argument("det2() should only be use on 2x2 matrixes");
     return ((A[0][0] * A[1][1]) - A[1][0] * A[0][1]);
 }
+
+/**
+ * @brief Calculates the determinant of a 3x3 matrix using the rule of Sarrus.
+ * 
+ * This function computes the determinant of a 3x3 matrix using the formula:
+ * |A| = a₁₁(a₂₂a₃₃ - a₃₂a₂₃) - a₂₁(a₁₂a₃₃ - a₃₂a₁₃) + a₃₁(a₁₂a₂₃ - a₂₂a₁₃)
+ * 
+ * @tparam K The type of elements in the matrix (must support arithmetic operations)
+ * @param A A 3x3 matrix whose determinant will be calculated
+ * @return K The determinant value of the matrix
+ * @throws std::invalid_argument If the input matrix is not 3x3
+ */
 template<typename K>
 K det3(const Matrix<K>& A)
 {
@@ -343,6 +364,22 @@ K det3(const Matrix<K>& A)
     );
 }
 
+/**
+ * @brief Calculates the determinant of a 4x4 matrix using cofactor expansion along the first row
+ * 
+ * This function computes the determinant of a 4x4 matrix by:
+ * 1. Creating 3x3 minors for each element in the first row
+ * 2. Computing the cofactor of each element (including appropriate sign)
+ * 3. Multiplying each cofactor by its corresponding minor's determinant
+ * 4. Summing the products to get the final determinant
+ * 
+ * @tparam K The numeric type of the matrix elements
+ * @param A The input 4x4 matrix
+ * @return K The determinant value
+ * @throws std::invalid_argument If the input matrix is not 4x4
+ * 
+ * @note This function depends on the det3() function to calculate determinants of 3x3 minors
+ */
 template<typename K>
 K det4(const Matrix<K>& A)
 {
