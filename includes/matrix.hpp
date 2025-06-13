@@ -537,7 +537,7 @@ class Matrix {
 
         /*========================= EX 13 =========================*/
         /*
-        * Methods for the Matrix class based on the ex12 instructions.
+        * Methods for the Matrix class based on the ex13 instructions.
         * Pure functions are at the bottom of the file, after the class definition.
         */
 
@@ -556,7 +556,6 @@ class Matrix {
             }
             return rank;
         }
-
     };
 
 

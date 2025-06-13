@@ -404,4 +404,34 @@ K det4(const Matrix<K>& A)
     return res;
 }
 
+/**
+ * @brief Generates a projection matrix for a perspective projection.
+ *
+ * This function calculates a perspective projection matrix based on the 
+ * field of view (FOV), aspect ratio, near clipping plane, and far clipping plane.
+ * The resulting matrix is transposed before being returned.
+ *
+ * @tparam K The numeric type used for the matrix elements (e.g., float, double).
+ * @param fov The field of view in degrees (vertical FOV).
+ * @param ratio The aspect ratio of the projection (width / height).
+ * @param near The distance to the near clipping plane.
+ * @param far The distance to the far clipping plane.
+ * @return Matrix<K> The transposed perspective projection matrix.
+ */
+template <typename K>
+Matrix<K> projection(K fov, K ratio, K near, K far)
+{
 
+    auto fovY = fov * (M_PI / 180);
+    auto t = tan(fovY / 2);
+    auto top = near * t;
+    auto right = top * ratio;
+    Matrix<K> proj({
+        {near / right, 0, 0, 0},
+        {0, near / top, 0, 0},
+        {0, 0, -(far + near) / (far - near), -2 * far * near / (far - near)},
+        {0, 0, -1, 0}
+    });
+    proj.transpose();
+    return proj;
+}
