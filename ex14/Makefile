@@ -22,7 +22,8 @@ $(BUILD_DIR):
 
 clean:
 	rm -rf $(BUILD_DIR)
-
+	rm -f proj
+ 
 fclean: clean
 	rm -f $(NAME)
 

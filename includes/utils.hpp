@@ -423,8 +423,7 @@ Matrix<K> projection(K fov, K ratio, K near, K far)
 {
 
     auto fovY = fov * (M_PI / 180);
-    auto t = tan(fovY / 2);
-    auto top = near * t;
+    auto top = near * tan(fovY / 2);
     auto right = top * ratio;
     Matrix<K> proj({
         {near / right, 0, 0, 0},
