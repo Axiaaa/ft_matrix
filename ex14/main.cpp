@@ -1,4 +1,3 @@
-#include "../includes/vector.hpp"
 #include "../includes/matrix.hpp"
 #include "../includes/utils.hpp"
 #include <cassert>

@@ -237,16 +237,6 @@ class Matrix {
         * Pure functions are at the bottom of the file, after the class definition.
         */
 
-        //No class methods for this one.
-
-        /*========================= EX 04 =========================*/
-        /*
-        * Methods for the vector class based on the ex04 instructions.
-        * Pure functions are at the bottom of the file, after the class definition.
-        */
-
-        //No class methods for this one.
-
         /*========================= EX 05 =========================*/
         /*
         * Methods for the vector class based on the ex05 instructions.
@@ -541,6 +531,18 @@ class Matrix {
         * Pure functions are at the bottom of the file, after the class definition.
         */
 
+        /**
+        * @brief Computes the rank of the matrix.
+        * 
+        * This function returns the rank of the matrix, which is the number 
+        * of linearly independent rows (or columns). It creates a temporary 
+        * copy of the matrix, transforms it into row echelon form, and then 
+        * counts the number of non-zero pivots along the main diagonal.
+        * 
+        * @tparam K The type of the elements in the matrix (e.g., int, float, double).
+        * 
+        * @return K The rank of the matrix.
+        */
         K rank()
         {
             K rank = 0; 
@@ -550,7 +552,7 @@ class Matrix {
             {
                 for (size_t row = 0; row < tmp.getRows(); ++row)
                 {
-                    if (col == row && tmp[col][row] > 0)
+                    if (col == row && std::abs(tmp[col][row]) > K(0e5))
                         rank++;
                 }
             }

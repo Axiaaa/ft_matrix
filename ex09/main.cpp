@@ -53,7 +53,7 @@ void test_single_dimension() {
     transpose(row).print();
     
     std::cout << "\n=== Testing single column matrix transpose ===" << std::endl;
-    Matrix<f32> col({{1}, {2}, {3}});
+    Matrix<f32> col(std::vector<std::vector<f32>>{{1}, {2}, {3}});
     
     std::cout << "Column matrix:" << std::endl;
     col.print();

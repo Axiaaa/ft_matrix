@@ -140,7 +140,7 @@ void test_special_cases() {
     std::cout << "Testing special cases..." << std::endl;
     
     // 1x1 matrix
-    Matrix<f32> single({
+    Matrix<f32> single(std::vector<std::vector<f32>>{
         {5}
     });
     assert(single.determinant() == 5.0f);
