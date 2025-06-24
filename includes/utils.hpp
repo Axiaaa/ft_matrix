@@ -8,6 +8,9 @@
  * This function calculates a linear combination of vectors where each vector is 
  * multiplied by its corresponding coefficient: result = c₁·v₁ + c₂·v₂ + ... + cₙ·vₙ
  * 
+ * Used to describe vector space: 
+ * V = [1, 0], U = [0, 1], a⋅V + b⋅U = (a, b)
+
  * @tparam K The type of elements in the vectors and coefficients
  * @param u Vector of vectors to be combined
  * @param coefs Vector of coefficients to multiply each vector by
@@ -68,7 +71,7 @@ K lerp(const K &a, const K &b, const f32 &t)
  * @brief Performs linear interpolation between two matrices.
  * 
  * This function computes a linear interpolation between matrices M and N using parameter t,
- * according to the formula: result = (1-t)*M + t*N
+ * according to the formula: result = (1 - t)⋅M + t⋅N
  * 
  * @tparam K The data type of the matrix elements
  * @param M The first matrix (corresponds to t=0)
@@ -80,16 +83,11 @@ K lerp(const K &a, const K &b, const f32 &t)
  * 
  * @note When t=0, the result is M; when t=1, the result is N; for values in between,
  *       the result is a weighted average of M and N.
- */
+ */ 
 template <typename K>
 Matrix<K> lerp(const Matrix<K> &M, const Matrix<K> &N, const f32 &t)
 {
-    if (M.getRows() != N.getRows() || M.getCols() != N.getCols()) {
-        throw std::invalid_argument("The matrices must have the same size.");
-    }
-    Matrix<K> result = scl(M, (1 - t));
-    result.add(scl(N, t));
-    return result;
+    return M * (1 - t) + (N * t);
 }
 
 
@@ -113,7 +111,7 @@ K angle_cos(const Vector<K>& v, const Vector<K>& u)
     K u_norm = norm(u);
     if (u_norm == 0 || v_norm == 0)
         throw std::invalid_argument("Cannot computes cosinus for 0 vector");
-    return (dot(v, u) / (norm(v) * norm(u)));
+    return (dot(v, u) / (v_norm * u_norm));
 }
 
 /**
@@ -222,25 +220,6 @@ Vector<K> cross_product(const Vector<K>& v, const Vector<K>& u)
     return res;
 }
 
-/**
- * @brief Computes the trace of a matrix.
- * 
- * The trace of a matrix is the sum of the elements on its main diagonal
- * (the elements where the row index equals the column index).
- * 
- * @tparam K The data type of the matrix elements.
- * @param A The input matrix for which to compute the trace.
- * @return K The trace of the input matrix (sum of diagonal elements).
- */
-template<typename K>
-K trace(const Matrix<K>& A)
-{
-    K sum = 0;
-    for (size_t i = 0; i < A.getCols(); ++i) {
-        sum += A[i][i];
-    }
-    return sum;
-}
 
 /**
  * @brief Transforms a matrix into its row echelon form

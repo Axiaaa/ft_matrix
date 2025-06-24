@@ -168,11 +168,18 @@ class Vector {
         * Pure functions are at the bottom of the file, after the class definition.
         */  
 
+        /**
+         * @brief Calculates the dot product of this vector with another vector.
+         * 
+         * The dot product is a scalar value that is equal to the sum of the products of
+         * the corresponding components of the two vectors.
+         * 
+         * @param v The vector to calculate the dot product with.
+         * @return K The scalar dot product result.
+         * @throws std::invalid_argument If the vectors have different sizes.
+         */
         K dot(const Vector<K>& v)
         {
-            if (this->getSize() != v.getSize())
-                throw std::invalid_argument("The vectors must have the same size.");
-
             Vector<K> tmp(v * (*this));
             K res = 0;
             for (size_t i = 0; i < this->getSize(); ++i)
@@ -385,12 +392,20 @@ bool operator==(const Vector<K>& v, const Vector<K>& u) {
     return true;
 }
 
+/**
+ * @brief Computes the dot product of two vectors.
+ * 
+ * The dot product is calculated as the sum of the products of the corresponding elements
+ * of the two vectors.
+ * 
+ * @param v First vector
+ * @param u Second vector
+ * @return The dot product of the two vectors
+ * @throws std::invalid_argument If the vectors do not have the same size
+ */
 template<typename K>
 K dot(const Vector<K>& v, const Vector<K>& u)
 {
-    if (u.getSize() != v.getSize())
-        throw std::invalid_argument("The vectors must have the same size.");
-
     Vector<K> tmp(v * u);
     K res = 0;
     for (size_t i = 0; i < u.getSize(); ++i)

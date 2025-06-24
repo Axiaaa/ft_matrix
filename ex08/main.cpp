@@ -10,7 +10,7 @@ void test_identity_matrix() {
         {0, 1, 0 },
         {0, 1, 1}
     });
-    assert(trace(identity) == 3.0f);
+    assert(identity.trace() == 3.0f);
     std::cout << "Identity matrix trace test passed" << std::endl;
 }
 
@@ -20,7 +20,7 @@ void test_diagonal_matrix() {
         {0, -23, 0},
         {0, 0, 4}
     });
-    assert(trace(diagonal) == -21.0f);
+    assert(diagonal.trace() == -21.0f);
     std::cout << "Diagonal matrix trace test passed" << std::endl;
 }
 
@@ -30,14 +30,14 @@ void test_square_matrices() {
         {4, 3, 7},
         {-2, 3, 4}
     });
-    assert(trace(m1) == 9.0f);
+    assert(m1.trace() == 9.0f);
     
     Matrix<f32> m2({
         {-2, -8, 4},
         {1, -23, 3},
         {0, 6, 4}
     });
-    assert(trace(m2) == -21.0f);
+    assert(m2.trace() == -21.0f);
     
     std::cout << "Square matrices trace tests passed" << std::endl;
 }
@@ -47,7 +47,7 @@ void test_various_sizes() {
         {5, 2},
         {3, 7}
     });
-    assert(trace(m2x2) == 12.0f);
+    assert(m2x2.trace() == 12.0f);
     
     Matrix<f32> m4x4({
         {1, 0, 0, 0},
@@ -55,7 +55,7 @@ void test_various_sizes() {
         {0, 0, 3, 0},
         {0, 0, 0, 4}
     });
-    assert(trace(m4x4) == 10.0f);
+    assert(m4x4.trace() == 10.0f);
     
     std::cout << "Different size matrices trace tests passed" << std::endl;
 }

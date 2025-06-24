@@ -309,7 +309,26 @@ class Matrix {
         * Pure functions are at the bottom of the file, after the class definition.
         */
         
-        //No class methods for this one.
+        /**
+        * @brief Computes the trace of a matrix.
+        * 
+        * The trace of a matrix is the sum of the elements on its main diagonal
+        * (the elements where the row index equals the column index).
+        * 
+        * @tparam K The data type of the matrix elements.
+        * @param A The input matrix for which to compute the trace.
+        * @return K The trace of the input matrix (sum of diagonal elements).
+        */
+        K trace()
+        {
+            if (this->getCols() != this->getRows())
+                throw std::invalid_argument("Matrix must be square for trace computation");
+            K sum = 0;
+            for (size_t i = 0; i < this->getCols(); ++i) {
+                sum += (*this)[i][i];
+            }
+            return sum;
+        }
 
 
         /*========================= EX 09 =========================*/
