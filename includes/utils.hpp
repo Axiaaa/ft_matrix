@@ -43,7 +43,7 @@ Vector<K> linear_combination(std::vector<Vector<K>> const &u, std::vector<K> coe
  * @return Vector<K> The interpolated vector
  */
 template <typename K>
-Vector<K> lerp(const Vector<K> &v, const Vector<K> &u, const f32 &t)
+Vector<K> lerp(const Vector<K> &v, const Vector<K> &u, const K &t)
 {
     return (1 - t) * v + t * u;
 }
@@ -248,7 +248,7 @@ Vector<K> cross_product(const Vector<K>& v, const Vector<K>& u)
  * @return Matrix<K> A new matrix in row echelon form
  */
 template<typename K>
-Matrix<K> row_echelon_form(const Matrix<K>& A)
+Matrix<K> row_echelon(const Matrix<K>& A)
 {
     Matrix<K> result = A;
     size_t rows = result.getRows();

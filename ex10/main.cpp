@@ -12,7 +12,7 @@ bool approx_equal(f32 a, f32 b, f32 epsilon = 1e-5f) {
 }
 
 // Helper function to check if a matrix is in proper row echelon form
-bool is_row_echelon_form(const Matrix<f32>& m) {
+bool is_row_echelon(const Matrix<f32>& m) {
     int last_lead_col = -1;
     
     for (size_t i = 0; i < m.getRows(); ++i) {
@@ -57,11 +57,11 @@ void test_example_matrix() {
         {8., 5., 1., 4., 17.}
     });
     
-    Matrix<f32> result = row_echelon_form(m);
+    Matrix<f32> result = row_echelon(m);
     std::cout << "Row echelon form:" << std::endl;
     result.print();
     
-    assert(is_row_echelon_form(result));
+    assert(is_row_echelon(result));
     std::cout << "Test passed!" << std::endl;
 }
 
@@ -74,10 +74,10 @@ void test_identity_matrix() {
         {0, 0, 1}
     });
     
-    Matrix<f32> result = row_echelon_form(identity);
+    Matrix<f32> result = row_echelon(identity);
     result.print();
     
-    assert(is_row_echelon_form(result));
+    assert(is_row_echelon(result));
     std::cout << "Test passed!" << std::endl;
 }
 
@@ -90,10 +90,10 @@ void test_zero_matrix() {
         {0, 0, 0}
     });
     
-    Matrix<f32> result = row_echelon_form(zero);
+    Matrix<f32> result = row_echelon(zero);
     result.print();
     
-    assert(is_row_echelon_form(result));
+    assert(is_row_echelon(result));
     std::cout << "Test passed!" << std::endl;
 }
 
@@ -105,10 +105,10 @@ void test_non_square_matrix() {
         {1, 3, 5, 7}
     });
     
-    Matrix<f32> result = row_echelon_form(m);
+    Matrix<f32> result = row_echelon(m);
     result.print();
     
-    assert(is_row_echelon_form(result));
+    assert(is_row_echelon(result));
     std::cout << "Test passed!" << std::endl;
 }
 
@@ -121,10 +121,10 @@ void test_specific_known_case() {
         {1, 5, 3}
     });
     
-    Matrix<f32> result = row_echelon_form(m);
+    Matrix<f32> result = row_echelon(m);
     result.print();
     
-    assert(is_row_echelon_form(result));
+    assert(is_row_echelon(result));
     std::cout << "Test passed!" << std::endl;
 }
 
@@ -136,9 +136,9 @@ void test_method() {
         {4.1, 5.9, 6.2},
         {7.8, 8.4, 9.0}
     });
-    m.row_echelon_form();
+    m.row_echelon();
     m.print();
-    assert(is_row_echelon_form(m));
+    assert(is_row_echelon(m));
     std::cout << "Test passed!" << std::endl;
 }
 

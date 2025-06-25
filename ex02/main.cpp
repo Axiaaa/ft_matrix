@@ -35,19 +35,19 @@ void test_vector_lerp() {
     Vector<f32> e1({2, 1});
     Vector<f32> e2({4, 2});
     
-    Vector<f32> result1 = lerp(e1, e2, 0.0f);
+    Vector<f32> result1 = lerp(e1, e2, 0.0);
     assert(almostEqual(result1[0], 2.0f) && almostEqual(result1[1], 1.0f));
     
-    Vector<f32> result2 = lerp(e1, e2, 0.3f);
+    Vector<f32> result2 = lerp(e1, e2, 0.3);
     assert(almostEqual(result2[0], 2.6f) && almostEqual(result2[1], 1.3f));
     
-    Vector<f32> result3 = lerp(e1, e2, 1.0f);
+    Vector<f32> result3 = lerp(e1, e2, 1.0);
     assert(almostEqual(result3[0], 4.0f) && almostEqual(result3[1], 2.0f));
     
     // Additional tests
     Vector<f32> v1({0, 0, 0});
     Vector<f32> v2({10, 20, 30});
-    Vector<f32> result4 = lerp(v1, v2, 0.5f);
+    Vector<f32> result4 = lerp(v1, v2, 0.5);
     assert(almostEqual(result4[0], 5.0f) && almostEqual(result4[1], 10.0f) && almostEqual(result4[2], 15.0f));
     
     std::cout << "Vector lerp tests PASSED" << std::endl;

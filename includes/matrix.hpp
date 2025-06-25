@@ -387,7 +387,7 @@ class Matrix {
         * @tparam K The data type of the matrix elements
         * @param A The input matrix to be transformed
         */
-        void row_echelon_form()
+        void row_echelon()
         {
             Matrix<K> result(*this);
             size_t rows = result.getRows();
@@ -566,7 +566,7 @@ class Matrix {
         {
             K rank = 0; 
             Matrix<K> tmp(*this);
-            tmp.row_echelon_form();
+            tmp.row_echelon();
             for (size_t col = 0; col < tmp.getCols(); ++col)
             {
                 for (size_t row = 0; row < tmp.getRows(); ++row)
